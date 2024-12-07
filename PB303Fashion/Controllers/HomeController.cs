@@ -21,14 +21,14 @@ namespace PB303Fashion.Controllers
             var products = await _dbContext.Products.Take(5).ToListAsync();
 
             HttpContext.Session.SetString("ses", "hello");
-            Response.Cookies.Append("cookie", "cookieValue",new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(5)});
+            Response.Cookies.Append("cookie", "cookieValue", new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(5) });
 
             var model = new HomeViewModel()
             {
                 Categories = categories,
                 Products = products,
             };
-            
+
             return View(model);
         }
 
@@ -48,8 +48,8 @@ namespace PB303Fashion.Controllers
 
             var basketInString = Request.Cookies["basket"];
             var basketViewModels = JsonConvert.DeserializeObject<List<BasketViewModel>>(basketInString);
-           
-            var newBasketViewModel=new List<BasketViewModel>();
+
+            var newBasketViewModel = new List<BasketViewModel>();
 
             foreach (var item in basketViewModels)
             {
@@ -116,7 +116,7 @@ namespace PB303Fashion.Controllers
 
             Response.Cookies.Append("basket", JsonConvert.SerializeObject(basketViewModels));
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { basketViewModels, Count = basketViewModels.Sum(x => x.Count), Sum = basketViewModels.Sum(y => y.Count * y.Price) });
         }
     }
 }
